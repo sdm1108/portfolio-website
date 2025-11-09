@@ -1,23 +1,37 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from 'react';
+import { Sun, Moon } from 'lucide-react';
 
-export default function ThemeToggle(){
-  const [theme, setTheme] = useState<'light'|'dark'>(() => (typeof window !== 'undefined' && (document.documentElement.classList.contains('dark') ? 'dark':'light')) ?? 'light');
+export default function ThemeToggle() {
+  // Safely initialize theme for SSR
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    if (typeof window === 'undefined') return 'light'; // default on server
+    return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+  });
 
+  // Update HTML class on theme change
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', theme === 'dark');
-    localStorage.setItem('theme', theme);
+    const root = document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
   }, [theme]);
 
-  useEffect(()=> {
-    const saved = localStorage.getItem('theme');
-    if(saved === 'dark') setTheme('dark');
-  },[]);
+  // Toggle function
+  const toggleTheme = () => {
+    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
+  };
 
   return (
-    <button onClick={()=> setTheme(theme === 'dark' ? 'light' : 'dark')} className="p-2 rounded-md border">
-      {theme === 'dark' ? '🌙' : '☀️'}
+    <button
+      onClick={toggleTheme}
+      className="p-2 rounded-md bg-gray-200 dark:bg-gray-700"
+      aria-label="Toggle Theme"
+    >
+      {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
     </button>
   );
 }
