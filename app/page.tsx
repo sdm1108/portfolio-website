@@ -45,7 +45,7 @@ export default function Home() {
         transition={{ duration: 1 }}
       >
         <Image
-          src="/images/hero-image.jpg" // Place your image in public/images/
+          src="/images/Hero.jpg" // Place your image in public/images/
           alt="Hero Image"
           fill
           className="object-contain"
